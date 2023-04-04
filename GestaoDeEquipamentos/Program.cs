@@ -38,11 +38,11 @@ namespace GestaoDeEquipamentos
                 switch (ValidarOpcaoMenuPrincipal(opcao))
                 {
                     case "1":
-                        ApresentarMenuEquipamentos();                       
+                        ApresentarMenuEquipamentos();
                         break;
 
                     case "2":
-                        ApresentarMenuChamados();                      
+                        ApresentarMenuChamados();
                         break;
 
                     default:
@@ -51,7 +51,7 @@ namespace GestaoDeEquipamentos
 
                 if (opcaoEquipamentos == "1")
                 {
-                    if (VerificarListaEquipamentosVazia("Lista de Equipamentos", ">> A lista de equipamentos está vazia"))
+                    if (VerificarListaVazia("Lista de Equipamentos", ">> A lista de equipamentos está vazia", "EQUIPAMENTOS"))
                         continue;
 
                     VisualizarEquipamentos();
@@ -68,7 +68,7 @@ namespace GestaoDeEquipamentos
 
                 else if (opcaoEquipamentos == "3")
                 {
-                    if (VerificarListaEquipamentosVazia("Editar Equipamento", "\n>> Não há item para ser editado!"))
+                    if (VerificarListaVazia("Editar Equipamento", "\n>> Não há item para ser editado!", "EQUIPAMENTOS"))
                         continue;
 
                     ModificarListas("EDITAR-EQUIPAMENTO");
@@ -77,7 +77,7 @@ namespace GestaoDeEquipamentos
 
                 else if (opcaoEquipamentos == "4")
                 {
-                    if (VerificarListaEquipamentosVazia("Remover Equipamento", "\n>> Não há item para ser removido!"))
+                    if (VerificarListaVazia("Remover Equipamento", "\n>> Não há item para ser removido!", "EQUIPAMENTOS"))
                         continue;
 
                     ModificarListas("REMOVER-EQUIPAMENTO");
@@ -86,7 +86,7 @@ namespace GestaoDeEquipamentos
 
                 if (opcaoChamados == "1")
                 {
-                    if (VerificarListaChamadosVazia("Lista de Chamados", "\n>> A lista de chamados está vazia"))
+                    if (VerificarListaVazia("Lista de Chamados", "\n>> A lista de chamados está vazia", "CHAMADOS"))
                         continue;
 
                     VisualizarChamados();
@@ -104,19 +104,19 @@ namespace GestaoDeEquipamentos
 
                 else if (opcaoChamados == "3")
                 {
-                    if (VerificarListaChamadosVazia("Editar Chamado", "\n>> Não há chamados para editar"))
+                    if (VerificarListaVazia("Editar Chamado", "\n>> Não há chamados para editar", "CHAMADOS"))
                         continue;
 
-                    ModificarListas("EDITAR-CHAMADO");               
+                    ModificarListas("EDITAR-CHAMADO");
                     continue;
                 }
 
                 else if (opcaoChamados == "4")
                 {
-                    if (VerificarListaChamadosVazia("Remover Chamado", "\n>> Não há chamados para remover"))
+                    if (VerificarListaVazia("Remover Chamado", "\n>> Não há chamados para remover", "CHAMADOS"))
                         continue;
 
-                    ModificarListas("REMOVER-CHAMADO");                    
+                    ModificarListas("REMOVER-CHAMADO");
                     continue;
                 }
 
@@ -131,327 +131,100 @@ namespace GestaoDeEquipamentos
                     continue;
                 }
 
-                Console.WriteLine("\n>> Digite 1 para retornar ao controle de equipamentos");
-                Console.WriteLine(">> Digite 2 para retornar ao controle de chamados");
-                Console.WriteLine("\n>> Digite S para fechar o programa");
-
-                opcao = Console.ReadLine().ToUpper();
-
-                while (opcao != "1" && opcao != "2" && opcao != "S")
-                {
-                    ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
-                    opcao = Console.ReadLine().ToUpper();
-                }
+                opcao = ValidarMenuDeRetorno(ApresentarMenuDeRetorno());
 
                 if (opcao == "S")
                     break;
             }
         }
-
-        static DateTime FormatarDataAbertura(string dataAberturaStr)
+        private static string ValidarMenuDeRetorno(string opcao)
         {
-            return DateTime.ParseExact(dataAberturaStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            while (opcao != "1" && opcao != "2" && opcao != "S")
+            {
+                ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
+                opcao = Console.ReadLine().ToUpper();
+            }
+
+            return opcao;
         }
-        static void VisualizarChamados()
+        static string ApresentarMenuPrincipal()
+        {
+            Cabecalho("Bem-Vindo à Gestão de Equipamentos");
+            Console.WriteLine(">> Digite 1 para usar o controle de equipamentos");
+            Console.WriteLine(">> Digite 2 para usar o controle de chamados");
+            Console.WriteLine("\n>> Digite S para fechar o programa");
+
+            return Console.ReadLine().ToUpper();
+        }
+        static string ValidarOpcaoMenuPrincipal(string opcao)
+        {
+            while (opcao != "1" && opcao != "2" && opcao != "S")
+            {
+                ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
+                opcao = Console.ReadLine().ToUpper();
+            }
+
+            return opcao;
+        }
+        static void ApresentarMenuEquipamentos()
         {
             Console.Clear();
+            Cabecalho("Bem-vindo ao controle de equipamentos");
+            Console.WriteLine(">> Digite 1 para visualizar equipamentos");
+            Console.WriteLine(">> Digite 2 para adicionar equipamentos");
+            Console.WriteLine(">> Digite 3 para editar equipamentos");
+            Console.WriteLine(">> Digite 4 para remover equipamentos");
+            Console.WriteLine("\n>> Digite S para voltar ao menu principal");
 
-            Cabecalho("Controle de Chamados");
+            opcaoEquipamentos = Console.ReadLine().ToUpper();
 
-            ColorirMensagem("\n>> Visualizando Chamados...", ConsoleColor.DarkYellow, "QUEBRAR-LINHA");
-
-            Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.WriteLine("\n{0,-5}| {1,-25}| {2,-13}| {3,-10}| {4,-10}", "ID", "Equipamento", "Título", "Descrição", "Data de Abertura");
-            Console.WriteLine("-----------------------------------------------------------------------------");
-
-            Console.ResetColor();
-
-            for (int i = 0; i < listaTitulosChamados.Count; i++)
-            {
-                Console.Write("{0,-5}| ", listaIDsChamados[i]);
-
-                Console.Write("{0,-25}| ", listaNomesEquipamentosChamados[i]);
-
-                Console.Write("{0,-13}| ", listaTitulosChamados[i]);
-
-                Console.Write("{0,-10}| ", listaDescricoesChamados[i]);
-
-                DateTime dataParaImpressao = (DateTime)listaDataDeAberturaChamados[i];
-
-                Console.WriteLine("{0,-10}", dataParaImpressao.ToString("dd/MM/yyyy"));
-            }        
+            ValidarMenu("EQUIPAMENTOS");
         }
-        static bool VerificarListaChamadosVazia(string cabecalho, string mensagem)
+        static void ValidarMenu(string tipoDeValidacao)
         {
-            bool listaVazia = false;
-
-            if (listaIDsChamados.Count == 0)
+            switch (tipoDeValidacao)
             {
-                Console.Clear();
+                case "EQUIPAMENTOS":
+                    while (opcaoEquipamentos != "1" && opcaoEquipamentos != "2" && opcaoEquipamentos != "3" && opcaoEquipamentos != "4" && opcaoEquipamentos != "S")
+                    {
+                        ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
+                        opcaoEquipamentos = Console.ReadLine().ToUpper();
+                    }
+                    break;
 
-                Cabecalho(cabecalho);
-                ColorirMensagem(mensagem, ConsoleColor.Red, "QUEBRAR-LINHA");
-                VoltarAoMenu();
-                listaVazia = true;
+                case "CHAMADOS":
+                    while (opcaoChamados != "1" && opcaoChamados != "2" && opcaoChamados != "3" && opcaoChamados != "4" && opcaoChamados != "S")
+                    {
+                        ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
+                        opcaoChamados = Console.ReadLine().ToUpper();
+                    }
+                    break;
+
+                default:
+                    break;
             }
-
-            return listaVazia;
         }
-        static void ObterID(string mensagem, string tipoDeID)
+        static void ApresentarMenuChamados()
         {
-            Console.Write(mensagem);
-            obterID = Convert.ToInt32(Console.ReadLine());
+            Console.Clear();
+            Cabecalho("Bem vindo ao controle de chamados");
+            Console.WriteLine(">> Digite 1 para visualizar chamados");
+            Console.WriteLine(">> Digite 2 para adicionar um chamado");
+            Console.WriteLine(">> Digite 3 para editar um chamado");
+            Console.WriteLine(">> Digite 4 para remover um chamado");
+            Console.WriteLine("\n>> Digite S para voltar ao menu principal");
 
-            if (tipoDeID == "EQUIPAMENTO")
-            {
-                posicao = listaIDsEquipamentos.IndexOf(obterID);
-            }
+            opcaoChamados = Console.ReadLine().ToUpper();
 
-            else if (tipoDeID == "CHAMADO")
-            {
-                posicao = listaIDsChamados.IndexOf(obterID);
-            }
+            ValidarMenu("CHAMADOS");
+        }
+        static string ApresentarMenuDeRetorno()
+        {
+            Console.WriteLine("\n>> Digite 1 para retornar ao controle de equipamentos");
+            Console.WriteLine(">> Digite 2 para retornar ao controle de chamados");
+            Console.WriteLine("\n>> Digite S para fechar o programa");
             
-        }
-        static void ModificarListas(string tipoOperacao)
-        {
-            if (tipoOperacao == "ADD-EQUIPAMENTO")
-            {
-                listaNomesEquipamentos.Add(ObterNomeEquipamento());
-                listaPrecosEquipamentos.Add(ObterPrecoAquisicao());
-                listaNumeroSerieEquipamentos.Add(ObterNumeroSerie());
-                listaDataFabricacaoEquipamentos.Add(FormatarDataFabricacao(ObterDataFabricacao()));
-                listaFabricanteEquipamentos.Add(ObterFabricante());
-                listaIDsEquipamentos.Add(idEquipamento);
-
-                idEquipamento++;
-
-                ColorirMensagem("\n>> Equipamento registrado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-
-                VoltarAoMenu();
-            }
-
-            else if (tipoOperacao == "EDITAR-EQUIPAMENTO")
-            {
-                VisualizarEquipamentos();
-
-                ObterID("\n>> Digite o ID do equipamento para editá-lo: ", "EQUIPAMENTO");
-
-                for (int i = 0; i <= listaIDsEquipamentos.Count; i++)
-                {
-
-                    if (i == posicao)
-                    {
-                        Console.Write($"\n>> Novo nome do equipamento com no mínimo {minimoDeCaracteres} caracteres: ");
-                        string nomeEquipamento = Console.ReadLine();
-
-                        while (nomeEquipamento.Length < minimoDeCaracteres)
-                        {
-                            Console.WriteLine($"\n>> O nome possui menos de {minimoDeCaracteres} caracteres");
-                            Console.Write($"\n>> Digite outro nome com mais de {minimoDeCaracteres} caracteres: ");
-                            nomeEquipamento = Console.ReadLine();
-                        }
-
-                        listaNomesEquipamentos[posicao] = nomeEquipamento;
-
-                        Console.Write("\n>> Novo preço de aquisição: ");
-                        decimal precoAquisicao = Math.Round(Convert.ToDecimal(Console.ReadLine()), 2);
-                        listaPrecosEquipamentos[posicao] = precoAquisicao;
-
-                        Console.Write("\n>> Novo número de série: ");
-                        string numeroSerie = Console.ReadLine();
-                        listaNumeroSerieEquipamentos[posicao] = numeroSerie;
-
-                        Console.Write("\n>> Nova data de fabricação (DD/MM/AAAA): ");
-                        string dataFabricacaoStr = Console.ReadLine();
-                        DateTime dataFabricacao = DateTime.ParseExact(dataFabricacaoStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                        listaDataFabricacaoEquipamentos[posicao] = dataFabricacao;
-
-                        Console.Write("\n>> Novo fabricante: ");
-                        string fabricante = Console.ReadLine();
-                        listaFabricanteEquipamentos[posicao] = fabricante;
-
-                        listaIDsEquipamentos[posicao] = obterID;
-
-                        ColorirMensagem("\n>> Equipamento editado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-
-                        VoltarAoMenu();
-                    }
-                }
-            }
-
-            else if (tipoOperacao == "REMOVER-EQUIPAMENTO")
-            {
-                VisualizarEquipamentos();
-
-                ObterID("\n>> Digite o ID do equipamento para removê-lo: ", "EQUIPAMENTO");
-
-                for (int i = 0; i <= listaIDsEquipamentos.Count; i++)
-                {
-                    if (i == posicao)
-                    {
-                        listaNomesEquipamentos.RemoveAt(posicao);
-                        listaPrecosEquipamentos.RemoveAt(posicao);
-                        listaNumeroSerieEquipamentos.RemoveAt(posicao);
-                        listaDataFabricacaoEquipamentos.RemoveAt(posicao);
-                        listaFabricanteEquipamentos.RemoveAt(posicao);
-                        listaIDsEquipamentos.RemoveAt(posicao);
-
-                        ColorirMensagem("\n>> Equipamento removido com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-                        VoltarAoMenu();
-                    }
-                }
-            }
-
-            else if (tipoOperacao == "ADD-CHAMADO")
-            {
-                Console.Clear();
-
-                Cabecalho("Crie um Chamado");
-
-                Console.Write($"\n>> Título do chamado: ");
-                string tituloChamado = Console.ReadLine();
-
-                listaTitulosChamados.Add(tituloChamado);
-
-                Console.Write("\n>> Digite o nome do equipamento: ");
-                string nomeEquipamento = Console.ReadLine();
-                listaNomesEquipamentosChamados.Add(nomeEquipamento);
-
-                Console.Write("\n>> Digite a descrição do chamado: ");
-                string descricaoChamado = Console.ReadLine();
-                listaDescricoesChamados.Add(descricaoChamado);
-
-                Console.Write("\n>> Data de abertura do chamado (DD/MM/AAAA): ");
-                string dataAberturaStr = Console.ReadLine();
-                DateTime dataAbertura = FormatarDataAbertura(dataAberturaStr);
-                listaDataDeAberturaChamados.Add(dataAbertura);
-
-                listaIDsChamados.Add(idChamado);
-
-                idChamado++;
-
-                ColorirMensagem("\n>> Equipamento registrado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-
-                VoltarAoMenu();
-            }
-
-            else if (tipoOperacao == "EDITAR-CHAMADO")
-            {
-                VisualizarChamados();
-
-                ObterID("\n>> Digite o ID do chamado para editá-lo: ", "CHAMADO");
-
-                for (int i = 0; i < listaIDsChamados.Count; i++)
-                {
-
-                    if (i == posicao)
-                    {
-                        Console.Write($"\n>> Digite o novo título do chamado: ");
-                        string tituloChamado = Console.ReadLine();
-                        listaTitulosChamados[posicao] = tituloChamado;
-
-                        Console.Write("\n>> Digite o novo nome do equipamento: ");
-                        string nomeEquipamento = Console.ReadLine();
-                        listaNomesEquipamentosChamados[posicao] = nomeEquipamento;
-
-                        Console.Write("\n>> Nova descrição do chamado: ");
-                        string descricaoChamado = Console.ReadLine();
-                        listaDescricoesChamados[posicao] = descricaoChamado;
-
-                        Console.Write("\n>> Nova data de abertura do chamado (DD/MM/AAAA): ");
-                        string dataAberturaStr = Console.ReadLine();
-                        DateTime dataAbertura = DateTime.ParseExact(dataAberturaStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                        listaDataDeAberturaChamados[posicao] = dataAbertura;
-
-                        listaIDsChamados[posicao] = obterID;
-
-                        ColorirMensagem("\n>> Equipamento editado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-                        VoltarAoMenu();
-                    }
-                }
-            }
-
-            else if (tipoOperacao == "REMOVER-CHAMADO")
-            {
-                VisualizarChamados();
-
-                ObterID("\n>> Digite o ID do chamado para removê-lo: ", "CHAMADO");
-
-                for (int i = 0; i <= listaIDsChamados.Count; i++)
-                {
-
-                    if (i == posicao)
-                    {
-                        listaTitulosChamados.RemoveAt(posicao);
-                        listaNomesEquipamentosChamados.RemoveAt(posicao);
-                        listaDescricoesChamados.RemoveAt(posicao);
-                        listaDataDeAberturaChamados.RemoveAt(posicao);
-                        listaIDsChamados.RemoveAt(posicao);
-
-                        ColorirMensagem("\n>> Chamado removido com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
-
-                        VoltarAoMenu();
-                    }
-                }
-            }
-        }
-        static void VoltarAoMenu()
-        {
-            ColorirMensagem("\n>> Pressione Enter para voltar ao menu", ConsoleColor.Yellow, "QUEBRAR-LINHA");
-            Console.ReadKey();
-        }
-        static string ObterFabricante()
-        {
-            Console.Write("\n>> Digite o fabricante: ");
-            string fabricante = Console.ReadLine();
-
-            return fabricante;
-        }
-        static DateTime FormatarDataFabricacao(string dataFabricacaoStr)
-        {
-            return DateTime.ParseExact(dataFabricacaoStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        }
-        static string ObterDataFabricacao()
-        {
-            Console.Write("\n>> Data de fabricação (DD/MM/AAAA): ");
-            string dataFabricacaoStr = Console.ReadLine();
-            return dataFabricacaoStr;
-        }
-        static string ObterNumeroSerie()
-        {
-            Console.Write("\n>> Número de série: ");
-            string numeroSerie = Console.ReadLine();
-            return numeroSerie;
-        }
-        static decimal ObterPrecoAquisicao()
-        {
-            Console.Write("\n>> Preço de aquisição: ");
-            decimal precoAquisicao = Math.Round(Convert.ToDecimal(Console.ReadLine()), 2);
-            return precoAquisicao;
-        }
-        static string ObterNomeEquipamento()
-        {
-            Console.Clear();
-            Cabecalho("Adicione um equipamento");
-            Console.Write($"\n>> Nome do equipamento com no minímo {minimoDeCaracteres} caracteres: ");
-            string nomeEquipamento = Console.ReadLine();
-
-            nomeEquipamento = ValidarTamanhoNomeEquipamento(nomeEquipamento);
-
-            return nomeEquipamento;
-        }
-        static string ValidarTamanhoNomeEquipamento(string nomeEquipamento)
-        {
-            while (nomeEquipamento.Length < minimoDeCaracteres)
-            {
-                ColorirMensagem($"\n>> O nome possui menos de {minimoDeCaracteres} caracteres", ConsoleColor.Red, "QUEBRAR-LINHA");
-                ColorirMensagem($"\n>> Digite outro nome com mais de {minimoDeCaracteres} caracteres: ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
-                nomeEquipamento = Console.ReadLine();
-            }
-
-            return nomeEquipamento;
+            return Console.ReadLine().ToUpper();
         }
         static void VisualizarEquipamentos()
         {
@@ -487,94 +260,296 @@ namespace GestaoDeEquipamentos
                 Console.WriteLine("{0,-10}", dataParaImpressao.ToString("dd/MM/yyyy"));
             }
         }
-        static bool VerificarListaEquipamentosVazia(string cabecalho, string mensagem)
+        static void VisualizarChamados()
+        {
+            Console.Clear();
+
+            Cabecalho("Controle de Chamados");
+
+            ColorirMensagem("\n>> Visualizando Chamados...", ConsoleColor.DarkYellow, "QUEBRAR-LINHA");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.WriteLine("\n{0,-5}| {1,-25}| {2,-13}| {3,-17}| {4,-10}", "ID", "Equipamento", "Título", "Data de Abertura", "Dias em Aberto");
+            Console.WriteLine("----------------------------------------------------------------------------------");
+
+            Console.ResetColor();
+
+            for (int i = 0; i < listaTitulosChamados.Count; i++)
+            {
+                Console.Write("{0,-5}| ", listaIDsChamados[i]);
+
+                Console.Write("{0,-25}| ", listaNomesEquipamentosChamados[i]);
+
+                Console.Write("{0,-13}| ", listaTitulosChamados[i]);
+
+                DateTime dataParaImpressao = (DateTime)listaDataDeAberturaChamados[i];
+
+                Console.Write("{0,-17}| ", dataParaImpressao.ToString("dd/MM/yyyy"));
+
+                DateTime diasEmAberto = (DateTime)listaDataDeAberturaChamados[i];
+                TimeSpan diasFormatado = DateTime.Now.Subtract(diasEmAberto);
+
+                Console.WriteLine("{0,-10}", $"{diasFormatado.Days} dias");
+            }
+        }
+        static bool VerificarListaVazia(string cabecalho, string mensagem, string tipoDeLista)
         {
             bool listaVazia = false;
 
-            if (listaIDsEquipamentos.Count == 0)
+            switch (tipoDeLista)
             {
-                Console.Clear();
+                case "EQUIPAMENTOS":
+                    if (listaIDsEquipamentos.Count == 0)
+                    {
+                        Console.Clear();
 
-                Cabecalho(cabecalho);
-                ColorirMensagem(mensagem, ConsoleColor.Red, "QUEBRAR-LINHA");
-                VoltarAoMenu();
-                listaVazia = true;
+                        Cabecalho(cabecalho);
+                        ColorirMensagem(mensagem, ConsoleColor.Red, "QUEBRAR-LINHA");
+                        VoltarAoMenu();
+                        listaVazia = true;
+                    }
+                    break;
+
+                case "CHAMADOS":
+                    if (listaIDsChamados.Count == 0)
+                    {
+                        Console.Clear();
+
+                        Cabecalho(cabecalho);
+                        ColorirMensagem(mensagem, ConsoleColor.Red, "QUEBRAR-LINHA");
+                        VoltarAoMenu();
+                        listaVazia = true;
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
             return listaVazia;
         }
-        static void ValidarMenuChamados()
+        static string ObterNomeEquipamento(string mensagem)
         {
-            while (opcaoChamados != "1" && opcaoChamados != "2" && opcaoChamados != "3" && opcaoChamados != "4" && opcaoChamados != "S")
+            Console.Write(mensagem);
+
+            return ValidarTamanhoNomeEquipamento(Console.ReadLine());
+        }
+        static string ValidarTamanhoNomeEquipamento(string nomeEquipamento)
+        {
+            while (nomeEquipamento.Length < minimoDeCaracteres)
             {
-                ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
-                opcaoChamados = Console.ReadLine().ToUpper();
-            }
-        }
-        static void ApresentarMenuChamados()
-        {
-            Console.Clear();
-            Cabecalho("Bem vindo ao controle de chamados");
-            Console.WriteLine(">> Digite 1 para visualizar chamados");
-            Console.WriteLine(">> Digite 2 para adicionar um chamado");
-            Console.WriteLine(">> Digite 3 para editar um chamado");
-            Console.WriteLine(">> Digite 4 para remover um chamado");
-            Console.WriteLine("\n>> Digite S para voltar ao menu principal");
-
-            opcaoChamados = Console.ReadLine().ToUpper();
-
-            ValidarMenuChamados();
-        }
-        static void ValidarMenuEquipamentos()
-        {
-            while (opcaoEquipamentos != "1" && opcaoEquipamentos != "2" && opcaoEquipamentos != "3" && opcaoEquipamentos != "4" && opcaoEquipamentos != "S")
-            {
-                ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
-                opcaoEquipamentos = Console.ReadLine().ToUpper();
-            }
-        }
-        static void ApresentarMenuEquipamentos()
-        {
-            Console.Clear();
-            Cabecalho("Bem-vindo ao controle de equipamentos");
-            Console.WriteLine(">> Digite 1 para visualizar equipamentos");
-            Console.WriteLine(">> Digite 2 para adicionar equipamentos");
-            Console.WriteLine(">> Digite 3 para editar equipamentos");
-            Console.WriteLine(">> Digite 4 para remover equipamentos");
-            Console.WriteLine("\n>> Digite S para voltar ao menu principal");
-
-            opcaoEquipamentos = Console.ReadLine().ToUpper();
-
-            ValidarMenuEquipamentos();
-        }
-        static string ValidarOpcaoMenuPrincipal(string opcao)
-        {
-            while (opcao != "1" && opcao != "2" && opcao != "S")
-            {
-                ColorirMensagem("\n>> Opção inválida, escolha outra: ", ConsoleColor.Red, "NAO-QUEBRAR-LINHA");
-                opcao = Console.ReadLine().ToUpper();
+                ColorirMensagem($"\n>> O nome possui menos de {minimoDeCaracteres} caracteres", ConsoleColor.Red, "QUEBRAR-LINHA");
+                ColorirMensagem($"\n>> Digite outro nome com mais de {minimoDeCaracteres} caracteres: ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
+                nomeEquipamento = Console.ReadLine();
             }
 
-            return opcao;
+            return nomeEquipamento;
         }
-        static string ApresentarMenuPrincipal()
+        static void ModificarListas(string tipoOperacao)
         {
-            Cabecalho("Bem-Vindo à Gestão de Equipamentos");
-            Console.WriteLine(">> Digite 1 para usar o controle de equipamentos");
-            Console.WriteLine(">> Digite 2 para usar o controle de chamados");
-            Console.WriteLine("\n>> Digite S para fechar o programa");
+            if (tipoOperacao == "ADD-EQUIPAMENTO")
+            {
+                Console.Clear();
 
-            string opcao = Console.ReadLine().ToUpper();
+                Cabecalho("Adicione um equipamento");
 
-            return opcao;
+                listaNomesEquipamentos.Add(ObterNomeEquipamento($"\n>> Nome do equipamento com no minímo {minimoDeCaracteres} caracteres: "));
+                listaPrecosEquipamentos.Add(ObterDecimal("\n>> Preço de aquisição: "));
+                listaNumeroSerieEquipamentos.Add(ObterString("\n>> Número de série: "));
+                listaDataFabricacaoEquipamentos.Add(FormatarData(ObterString("\n>> Data de fabricação (DD/MM/AAAA): ")));
+                listaFabricanteEquipamentos.Add(ObterString("\n>> Digite o fabricante: "));
+                listaIDsEquipamentos.Add(idEquipamento);
+
+                idEquipamento++;
+
+                ColorirMensagem("\n>> Equipamento registrado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                VoltarAoMenu();
+            }
+
+            else if (tipoOperacao == "EDITAR-EQUIPAMENTO")
+            {
+                VisualizarEquipamentos();
+
+                ObterID("\n>> Digite o ID do equipamento para editá-lo: ", "EQUIPAMENTO");
+
+                for (int i = 0; i <= listaIDsEquipamentos.Count; i++)
+                {
+                    if (i == posicao)
+                    {
+                        listaNomesEquipamentos[posicao] = ValidarTamanhoNomeEquipamento(ObterNomeEquipamento($"\n>> Novo nome do equipamento com no mínimo {minimoDeCaracteres} caracteres: "));
+                        listaPrecosEquipamentos[posicao] = Math.Round(Convert.ToDecimal(ObterDecimal("\n>> Novo preço de aquisição: ")), 2);
+                        listaNumeroSerieEquipamentos[posicao] = ObterString("\n>> Novo número de série: ");                      
+                        listaDataFabricacaoEquipamentos[posicao] = VerificarFormatoData("\n>> Nova data de fabricação (DD/MM/AAAA): ");
+                        listaFabricanteEquipamentos[posicao] = ObterString("\n>> Novo fabricante: ");
+                        listaIDsEquipamentos[posicao] = obterID;
+
+                        ColorirMensagem("\n>> Equipamento editado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                        VoltarAoMenu();
+                    }
+                }
+            }
+
+            else if (tipoOperacao == "REMOVER-EQUIPAMENTO")
+            {
+                VisualizarEquipamentos();
+
+                ObterID("\n>> Digite o ID do equipamento para removê-lo: ", "EQUIPAMENTO");
+
+                for (int i = 0; i <= listaIDsEquipamentos.Count; i++)
+                {
+                    if (i == posicao)
+                    {
+                        listaNomesEquipamentos.RemoveAt(posicao);
+                        listaPrecosEquipamentos.RemoveAt(posicao);
+                        listaNumeroSerieEquipamentos.RemoveAt(posicao);
+                        listaDataFabricacaoEquipamentos.RemoveAt(posicao);
+                        listaFabricanteEquipamentos.RemoveAt(posicao);
+                        listaIDsEquipamentos.RemoveAt(posicao);
+
+                        ColorirMensagem("\n>> Equipamento removido com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                        VoltarAoMenu();
+                    }
+                }
+            }
+
+            else if (tipoOperacao == "ADD-CHAMADO")
+            {
+                Console.Clear();
+
+                Cabecalho("Crie um Chamado");
+
+                listaTitulosChamados.Add(ObterString($"\n>> Título do chamado: "));
+                listaNomesEquipamentosChamados.Add(ObterString("\n>> Digite o nome do equipamento: "));
+                listaDescricoesChamados.Add(ObterString("\n>> Digite a descrição do chamado: "));
+                listaDataDeAberturaChamados.Add(FormatarData(ObterString("\n>> Data de abertura do chamado (DD/MM/AAAA): ")));
+                listaIDsChamados.Add(idChamado);
+
+                idChamado++;
+
+                ColorirMensagem("\n>> Equipamento registrado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                VoltarAoMenu();
+            }
+
+            else if (tipoOperacao == "EDITAR-CHAMADO")
+            {
+                VisualizarChamados();
+
+                ObterID("\n>> Digite o ID do chamado para editá-lo: ", "CHAMADO");
+
+                for (int i = 0; i < listaIDsChamados.Count; i++)
+                {
+
+                    if (i == posicao)
+                    {
+                        listaTitulosChamados[posicao] = ObterString($"\n>> Digite o novo título do chamado: ");
+                        listaNomesEquipamentosChamados[posicao] = ObterString("\n>> Digite o novo nome do equipamento: ");
+                        listaDescricoesChamados[posicao] = ObterString("\n>> Nova descrição do chamado: ");
+                        listaDataDeAberturaChamados[posicao] = FormatarData("\n>> Nova data de abertura do chamado (DD/MM/AAAA): ");
+                        listaIDsChamados[posicao] = obterID;
+
+                        ColorirMensagem("\n>> Equipamento editado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                        VoltarAoMenu();
+                    }
+                }
+            }
+
+            else if (tipoOperacao == "REMOVER-CHAMADO")
+            {
+                VisualizarChamados();
+
+                ObterID("\n>> Digite o ID do chamado para removê-lo: ", "CHAMADO");
+
+                for (int i = 0; i <= listaIDsChamados.Count; i++)
+                {
+
+                    if (i == posicao)
+                    {
+                        listaTitulosChamados.RemoveAt(posicao);
+                        listaNomesEquipamentosChamados.RemoveAt(posicao);
+                        listaDescricoesChamados.RemoveAt(posicao);
+                        listaDataDeAberturaChamados.RemoveAt(posicao);
+                        listaIDsChamados.RemoveAt(posicao);
+
+                        ColorirMensagem("\n>> Chamado removido com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
+
+                        VoltarAoMenu();
+                    }
+                }
+            }
         }
-        static string Cabecalho(string mensagem)
+
+        static DateTime VerificarFormatoData(string mensagem)
+        {
+            while (true)
+            {
+                try
+                {
+                    return DateTime.ParseExact(ObterString(mensagem), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    
+                }
+                catch
+                {
+                    ColorirMensagem("\n>> Ocorreu um erro na escrita da data!", ConsoleColor.Red, "QUEBRAR-LINHA");
+                    ColorirMensagem("\n>> Reescreva utilizando o formato correto (DD/MM/AAAA): ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
+                }
+            }
+        }
+
+        static void ObterID(string mensagem, string tipoDeID)
+        {
+            Console.Write(mensagem);
+            obterID = Convert.ToInt32(Console.ReadLine());
+
+            if (tipoDeID == "EQUIPAMENTO")
+            {
+                posicao = listaIDsEquipamentos.IndexOf(obterID);
+            }
+
+            else if (tipoDeID == "CHAMADO")
+            {
+                posicao = listaIDsChamados.IndexOf(obterID);
+            }
+            
+        }
+        static decimal ObterDecimal(string mensagem)
+        {
+            Console.Write(mensagem);
+            
+            while (true)
+            {
+                try
+                {
+                    return Math.Round(Convert.ToDecimal(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture), 2);
+                }
+                catch (FormatException)
+                {
+                    ColorirMensagem("\n>> Apenas números são aceitos!", ConsoleColor.Red, "QUEBRAR-LINHA");
+                    ColorirMensagem("\n>> Digite outro número: ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
+                }
+            }
+        }
+        static string ObterString(string mensagem)
+        {
+            Console.Write(mensagem);
+
+            return Console.ReadLine();
+        }
+        static void VoltarAoMenu()
+        {
+            ColorirMensagem("\n>> Pressione Enter para voltar ao menu", ConsoleColor.Yellow, "QUEBRAR-LINHA");
+            Console.ReadKey();
+        }
+        static void Cabecalho(string mensagem)
         {
             ColorirMensagem($"------ {mensagem} ------\n", ConsoleColor.Green, "QUEBRAR-LINHA");
-
-            return mensagem;
         }
-        static string ColorirMensagem(string mensagem, ConsoleColor cor, string quebrarLinha)
+        static void ColorirMensagem(string mensagem, ConsoleColor cor, string quebrarLinha)
         {
             if (quebrarLinha == "QUEBRAR-LINHA")
             {
@@ -589,8 +564,22 @@ namespace GestaoDeEquipamentos
                 Console.Write(mensagem);
                 Console.ResetColor();
             }
-
-            return mensagem;
+        }
+        static DateTime FormatarData(string dataStr)
+        {
+            while (true)
+            {
+                try
+                {
+                    return DateTime.ParseExact(dataStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                    ColorirMensagem("\n>> Ocorreu um erro na escrita da data!", ConsoleColor.Red, "QUEBRAR-LINHA");
+                    ColorirMensagem("\n>> Reescreva utilizando o formato correto (DD/MM/AAAA): ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
+                    dataStr = Console.ReadLine();
+                }
+            }       
         }
     }
 }
