@@ -137,7 +137,7 @@ namespace GestaoDeEquipamentos
                     break;
             }
         }
-        private static string ValidarMenuDeRetorno(string opcao)
+        static string ValidarMenuDeRetorno(string opcao)
         {
             while (opcao != "1" && opcao != "2" && opcao != "S")
             {
@@ -381,7 +381,7 @@ namespace GestaoDeEquipamentos
                         listaNomesEquipamentos[posicao] = ValidarTamanhoNomeEquipamento(ObterNomeEquipamento($"\n>> Novo nome do equipamento com no mínimo {minimoDeCaracteres} caracteres: "));
                         listaPrecosEquipamentos[posicao] = Math.Round(Convert.ToDecimal(ObterDecimal("\n>> Novo preço de aquisição: ")), 2);
                         listaNumeroSerieEquipamentos[posicao] = ObterString("\n>> Novo número de série: ");                      
-                        listaDataFabricacaoEquipamentos[posicao] = VerificarFormatoData("\n>> Nova data de fabricação (DD/MM/AAAA): ");
+                        listaDataFabricacaoEquipamentos[posicao] = VerificarFormatoData(ObterString("\n>> Nova data de fabricação (DD/MM/AAAA): "));
                         listaFabricanteEquipamentos[posicao] = ObterString("\n>> Novo fabricante: ");
                         listaIDsEquipamentos[posicao] = obterID;
 
@@ -449,7 +449,7 @@ namespace GestaoDeEquipamentos
                         listaTitulosChamados[posicao] = ObterString($"\n>> Digite o novo título do chamado: ");
                         listaNomesEquipamentosChamados[posicao] = ObterString("\n>> Digite o novo nome do equipamento: ");
                         listaDescricoesChamados[posicao] = ObterString("\n>> Nova descrição do chamado: ");
-                        listaDataDeAberturaChamados[posicao] = FormatarData("\n>> Nova data de abertura do chamado (DD/MM/AAAA): ");
+                        listaDataDeAberturaChamados[posicao] = FormatarData(ObterString("\n>> Nova data de abertura do chamado (DD/MM/AAAA): "));
                         listaIDsChamados[posicao] = obterID;
 
                         ColorirMensagem("\n>> Equipamento editado com sucesso!", ConsoleColor.Green, "QUEBRAR-LINHA");
@@ -483,24 +483,6 @@ namespace GestaoDeEquipamentos
                 }
             }
         }
-
-        static DateTime VerificarFormatoData(string mensagem)
-        {
-            while (true)
-            {
-                try
-                {
-                    return DateTime.ParseExact(ObterString(mensagem), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    
-                }
-                catch
-                {
-                    ColorirMensagem("\n>> Ocorreu um erro na escrita da data!", ConsoleColor.Red, "QUEBRAR-LINHA");
-                    ColorirMensagem("\n>> Reescreva utilizando o formato correto (DD/MM/AAAA): ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
-                }
-            }
-        }
-
         static void ObterID(string mensagem, string tipoDeID)
         {
             Console.Write(mensagem);
@@ -580,6 +562,23 @@ namespace GestaoDeEquipamentos
                     dataStr = Console.ReadLine();
                 }
             }       
+        }
+        static DateTime VerificarFormatoData(string mensagem)
+        {
+            while (true)
+            {
+                try
+                {
+                    return DateTime.ParseExact(mensagem, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                }
+                catch
+                {
+                    ColorirMensagem("\n>> Ocorreu um erro na escrita da data!", ConsoleColor.Red, "QUEBRAR-LINHA");
+                    ColorirMensagem("\n>> Reescreva utilizando o formato correto (DD/MM/AAAA): ", ConsoleColor.Yellow, "NAO-QUEBRAR-LINHA");
+                    mensagem = Console.ReadLine();
+                }
+            }
         }
     }
 }
